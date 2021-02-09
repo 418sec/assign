@@ -10,6 +10,13 @@ export type DeepPartial<T> = {
 };
 
 /**
+ * Blacklist certain keys to prevent Prototype Pollution
+ */
+function isPrototypePolluted(key: any) {
+  return ["__proto__", "constructor", "prototype"].includes(key);
+}
+
+/**
  * Simple recursive assign of objects.
  */
 export function assign<T>(target: T, value: DeepPartial<T>) {
@@ -29,6 +36,7 @@ export function assign<T>(target: T, value: DeepPartial<T>) {
 
   if (typeof target === "object" && typeof value === "object") {
     for (const key of Object.keys(value)) {
+      if (isPrototypePolluted(key)) continue;
       (target as any)[key] = assign((target as any)[key], (value as any)[key]);
     }
 

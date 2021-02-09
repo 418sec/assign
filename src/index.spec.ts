@@ -63,4 +63,11 @@ describe("assign", () => {
       }
     });
   });
+
+  it("should not pollute prototype", () => {
+    const result = assign({}, JSON.parse('{"__proto__": {"polluted": true}}'));
+
+    expect(result).toStrictEqual({});
+    expect(Object.keys(Object.prototype).includes("polluted")).toBe(false);
+  });
 });
